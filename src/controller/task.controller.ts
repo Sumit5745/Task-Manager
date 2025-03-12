@@ -21,7 +21,7 @@ export const cerateTask = async (req: Request, res: Response): Promise<any> => {
 
     const message = `you have been assigned a new task : ${title}`;
     const notification = await Notification.create({ userId, message });
-
+    
     // socket event
     io.to(`user-${userId}`).emit("newNotification", notification);
 
