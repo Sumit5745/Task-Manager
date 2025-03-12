@@ -14,7 +14,7 @@ export const Register = async (req: Request, res: Response): Promise<any> => {
         .json({ message: "email already exists", success: false });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword,
@@ -46,9 +46,12 @@ export const Login = async (req: Request, res: Response): Promise<any> => {
         .json({ message: "Invalid credentials", success: false });
     }
 
-    const token = jwt.sign({ user }, process.env.SECRET_KEY!, {
-      expiresIn: "24h",
-    });
+    const token = jwt.sign(
+      { id: user.id, name: user.name, email: user.email, role: user.role },
+      process.env.SECRET_KEY!,
+      { expiresIn: "24h" }
+    );
+
     res.json({
       message: "Logged in successfully",
       success: true,
